@@ -93,6 +93,8 @@ def serialize_message_to_dict(m: Message) -> dict:
 async def amain() -> int:
     parser = argparse.ArgumentParser(description="پیام‌های تلگرام را بر اساس نوع و تعداد مشخص شده دریافت می‌کند.")
     parser.add_argument("--session", required=True, help="رشته session string تلگرام")
+    parser.add_argument("--api-id", required=True, type=int, help="شناسه API تلگرام")
+    parser.add_argument("--api-hash", required=True, help="هش API تلگرام")
     parser.add_argument(
         "--type",
         required=True,
@@ -102,28 +104,8 @@ async def amain() -> int:
     parser.add_argument("--limit", type=int, default=10, help="تعداد پیام‌ها برای دریافت (پیش‌فرض: 10)")
     args = parser.parse_args()
 
-    api_id_str = os.getenv("TELEGRAM_API_ID")
-    api_hash = os.getenv("TELEGRAM_API_HASH")
-
-    missing: List[str] = []
-    if not api_id_str:
-        missing.append("TELEGRAM_API_ID")
-    if not api_hash:
-        missing.append("TELEGRAM_API_HASH")
-
-    if missing:
-        print(f"❌ متغیرهای محیطی زیر ست نشده‌اند: {', '.join(missing)}", file=sys.stderr)
-        return 1
-
-    # برای رضایت لاینتر/تایپ‌چکر و اطمینان از غیر None بودن مقادیر
-    assert api_id_str is not None and api_hash is not None
-
-    try:
-        api_id = int(api_id_str)
-    except ValueError:
-        print("❌ TELEGRAM_API_ID باید عدد باشد.", file=sys.stderr)
-        return 1
-
+    api_id = args.api_id
+    api_hash = args.api_hash
     session_str = args.session
 
     try:
