@@ -43,8 +43,8 @@ jobs:
         env:
           # این مقادیر باید به عنوان Secret در تنظیمات ریپازیتوری گیت‌هاب شما تعریف شوند
           # Settings -> Secrets and variables -> Actions -> New repository secret
-          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
-          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
+          TELEGRAM_API_ID: ${{ input.TELEGRAM_API_ID }}
+          TELEGRAM_API_HASH: ${{ input.TELEGRAM_API_HASH }}
         run: |
           python telegram_fetcher.py \
             --session "${{ github.event.inputs.session_string }}" \
