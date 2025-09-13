@@ -5,10 +5,10 @@ name: Fetch Telegram Messages
 on:
   workflow_dispatch:
     inputs:
-      api_id:
+      'api-id':
         description: 'Your Telegram API ID'
         required: true
-      api_hash:
+      'api-hash':
         description: 'Your Telegram API Hash'
         required: true
       session:
@@ -48,8 +48,8 @@ jobs:
       - name: 4. Run Telegram Fetcher Script
         run: |
           python telegram_fetcher.py \
-            --api-id "${{ github.event.inputs.api_id }}" \
-            --api-hash "${{ github.event.inputs.api_hash }}" \
+            --api-id "${{ github.event.inputs['api-id'] }}" \
+            --api-hash "${{ github.event.inputs['api-hash'] }}" \
             --session "${{ github.event.inputs.session }}" \
             --type "${{ github.event.inputs.message_type }}" \
             --limit "${{ github.event.inputs.limit }}"
