@@ -55,4 +55,5 @@ jobs:
             --api-hash "${{ github.event.inputs['api-hash'] }}" \
             --session "${{ github.event.inputs.session }}" \
             --type "${{ github.event.inputs.message_type }}" \
-            --limit "${{ github.event.inputs.limit }}"
+            --limit "${{ github.event.inputs.limit }}" \
+            --resume-url "${{ github.event.inputs.resumeUrl }}"

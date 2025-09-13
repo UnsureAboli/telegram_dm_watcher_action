@@ -3,6 +3,7 @@ import sys
 import asyncio
 import argparse
 import json
+import urllib.request
 from typing import List, Optional
 from datetime import datetime
 
@@ -102,6 +103,7 @@ async def amain() -> int:
         help="نوع پیام‌ها برای دریافت: private, channel, یا all",
     )
     parser.add_argument("--limit", type=int, default=10, help="تعداد پیام‌ها برای دریافت (پیش‌فرض: 10)")
+    parser.add_argument("--resume-url", help="Webhook URL to send the result to (for n8n integration)")
     args = parser.parse_args()
 
     api_id = args.api_id
@@ -128,9 +130,29 @@ async def amain() -> int:
             # چاپ خروجی نهایی به صورت JSON
             # ensure_ascii=False برای پشتیبانی از حروف فارسی
             json_output = json.dumps(output_data, indent=2, ensure_ascii=False)
-            print(json_output)
 
-            print(f"✅ {len(messages)} پیام با موفقیت واکشی و در خروجی چاپ شد.", file=sys.stderr)
+            if args.resume_url:
+                print(f"ارسال نتیجه به {args.resume_url}...", file=sys.stderr)
+                try:
+                    req = urllib.request.Request(
+                        args.resume_url,
+                        data=json_output.encode('utf-8'),
+                        headers={'Content-Type': 'application/json'},
+                        method='POST'
+                    )
+                    with urllib.request.urlopen(req) as response:
+                        if 200 <= response.status < 300:
+                            print("✅ نتیجه با موفقیت به n8n ارسال شد.", file=sys.stderr)
+                        else:
+                            print(f"❌ خطا در ارسال به n8n: {response.status} {response.reason}", file=sys.stderr)
+                            print(response.read().decode('utf-8'), file=sys.stderr)
+                            return 1
+                except Exception as post_error:
+                    print(f"❌ خطای مرگبار در حین ارسال به n8n: {post_error}", file=sys.stderr)
+                    return 1
+            else:
+                print(json_output)
+                print(f"✅ {len(messages)} پیام با موفقیت واکشی و در خروجی چاپ شد.", file=sys.stderr)
 
     except Exception as e:
         print(f"❌ خطایی در حین اجرای عملیات رخ داد: {e}", file=sys.stderr)
