@@ -11,7 +11,7 @@ on:
       api_hash:
         description: 'Your Telegram API Hash'
         required: true
-      session_string:
+      session:
         description: 'Telegram Session String'
         required: true
       message_type:
@@ -50,6 +50,6 @@ jobs:
           python telegram_fetcher.py \
             --api-id "${{ github.event.inputs.api_id }}" \
             --api-hash "${{ github.event.inputs.api_hash }}" \
-            --session "${{ github.event.inputs.session_string }}" \
+            --session "${{ github.event.inputs.session }}" \
             --type "${{ github.event.inputs.message_type }}" \
             --limit "${{ github.event.inputs.limit }}"
