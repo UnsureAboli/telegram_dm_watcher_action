@@ -27,6 +27,9 @@ on:
         description: 'Number of messages to fetch'
         required: false
         default: '10'
+      resumeUrl:
+        description: 'n8n internal parameter for resuming the workflow. Should be ignored.'
+        required: false
 
 jobs:
   fetch-messages:
